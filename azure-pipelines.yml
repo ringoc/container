@@ -11,8 +11,12 @@ resources:
 variables:
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: '93f7fc7f-c834-400e-992e-020dee6f181c'
+  azureARMServiceConnection: 'azureARMServiceConnection'
+  resourceGroupName: 'container'
   imageRepository: 'sampleapp'
   containerRegistry: 'kbrcr.azurecr.io'
+  # aciManifestTemplateFile: '$(Build.SourcesDirectory)/deploy-aci.yaml'
+  # aciManifestFile: '$(Build.SourcesDirectory)/deploy.yaml'
   dockerfilePath: '$(Build.SourcesDirectory)/app/Dockerfile'
   tag: '$(Build.BuildId)'
 
@@ -37,3 +41,20 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
+     - task: AzureWebAppContainer@1
+       inputs:
+         appName: "ringocsampleapp"
+         azureSubscription: $(azureARMServiceConnection)
+         imageName: kbrcr.azurecr.io/sampleapp:6 
+    # - task: AzureCLI@2
+    #   displayName: 'Deploy to Azure'
+    #   inputs:
+    #     azureSubscription: $(azureARMServiceConnection)
+    #     scriptType: 'bash'
+    #     scriptLocation: 'inlineScript'
+    #     inlineScript: | 
+    #       az container create --resource-group $(resourceGroupName) \
+    #         --name $(imageRepository) --image kbrcr.azurecr.io/$(imageRepository) \
+    #         --ip-address Public --ports 3000 \
+    #         --environment-variables 'PORT'='3000' \
+    #         --dns-name-label $(imageRepository)
