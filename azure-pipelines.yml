@@ -13,7 +13,7 @@ variables:
   dockerRegistryServiceConnection: '93f7fc7f-c834-400e-992e-020dee6f181c'
   imageRepository: 'helloworld'
   containerRegistry: 'kbrcr.azurecr.io'
-  dockerfilePath: '**/Dockerfile'
+  dockerfilePath: '$(Build.SourcesDirectory)/app/Dockerfile'
   tag: '$(Build.BuildId)'
 
   # Agent VM image name
