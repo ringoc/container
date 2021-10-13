@@ -19,6 +19,7 @@ variables:
   # aciManifestFile: '$(Build.SourcesDirectory)/deploy.yaml'
   dockerfilePath: '$(Build.SourcesDirectory)/app/Dockerfile'
   tag: '$(Build.BuildId)'
+  registry-password: $(registry-password)
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
@@ -43,6 +44,8 @@ stages:
           $(tag)
     - task: AzureCLI@2
       displayName: 'Deploy to Azure'
+      env:
+        MY_MAPPED_ENV_VAR: $(registry-password)
       inputs:
         azureSubscription: $(azureARMServiceConnection)
         scriptType: 'bash'
@@ -52,4 +55,5 @@ stages:
             --name $(imageRepository) --image kbrcr.azurecr.io/$(imageRepository) \
             --ip-address Public --ports 3000 \
             --environment-variables 'PORT'='3000' \
-            --dns-name-label $(imageRepository)
+            --dns-name-label $(imageRepository) \
+            --registry-username kbrcr --registry-password $MY_MAPPED_ENV_VAR
