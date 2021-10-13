@@ -52,7 +52,7 @@ stages:
         scriptLocation: 'inlineScript'
         inlineScript: | 
           az container create --resource-group $(resourceGroupName) \
-            --name $(imageRepository) --image kbrcr.azurecr.io/$(imageRepository) \
+            --name $(imageRepository) --image $(containerRegistry)/$(imageRepository):$(tag) \
             --ip-address Public --ports 3000 \
             --environment-variables 'PORT'='3000' \
             --dns-name-label $(imageRepository) \
